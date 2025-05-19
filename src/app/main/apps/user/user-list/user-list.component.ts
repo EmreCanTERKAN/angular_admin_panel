@@ -11,6 +11,7 @@ import { UserListService } from 'app/main/apps/user/user-list/user-list.service'
 
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
+import { SwalService } from '../../services/swal.service';
 
 @Component({
   selector: 'app-user-list',
@@ -71,12 +72,14 @@ export class UserListComponent implements OnInit {
    * @param {UserListService} _userListService
    * @param {CoreSidebarService} _coreSidebarService
    * @param {ToastrService} _toastr
+   * @param {SwalService} _swal
    */
   constructor(
     private _userListService: UserListService,
     private _coreSidebarService: CoreSidebarService,
     private _coreConfigService: CoreConfigService,
-    private toastr: ToastrService
+    private _swal : SwalService
+
   ) {
     this._unsubscribeAll = new Subject();
   }
@@ -169,22 +172,9 @@ export class UserListComponent implements OnInit {
   }
 
   onDelete(row) {
-    Swal.fire({
-      title: 'Emin misiniz?',
-      text: 'Bu kullanıcıyı silmek istediğinize emin misiniz?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Evet, sil',
-      cancelButtonText: 'Vazgeç'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // Silme işlemini burada yapabilirsin
-        // Örnek: this.rows = this.rows.filter(u => u.id !== row.id);
-        // Eğer id yoksa, başka bir unique alan kullanabilirsin
-        this.rows = this.rows.filter(u => u !== row);
-        this.toastr.success('Kullanıcı başarıyla silindi!', 'Başarılı');
-      }
-    });
+    this._swal.callSwal("Bu kullanıcıyı silmek istediğinize emin misiniz?","Bu işlem geri alınamaz",() => 
+      console.log("deneme"),
+    "Sil","error")
   }
 
   // Lifecycle Hooks
@@ -221,30 +211,4 @@ export class UserListComponent implements OnInit {
     this._unsubscribeAll.complete();
   }
 
-  confirmTextOpen() {
-    Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#7367F0',
-      cancelButtonColor: '#E42728',
-      confirmButtonText: 'Yes, delete it!',
-      customClass: {
-        confirmButton: 'btn btn-primary',
-        cancelButton: 'btn btn-danger ml-1'
-      }
-    }).then(function (result) {
-      if (result.value) {
-        Swal.fire({
-          icon: 'success',
-          title: 'Deleted!',
-          text: 'Your file has been deleted.',
-          customClass: {
-            confirmButton: 'btn btn-success'
-          }
-        });
-      }
-    });
-  }
 }
