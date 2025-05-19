@@ -20,6 +20,7 @@ import { ProfileFakeData } from '@fake-db/profile.data';
 import { SearchFakeData } from '@fake-db/search.data';
 import { TodoFakeData } from '@fake-db/todo.data';
 import { UsersFakeData } from '@fake-db/users.data';
+import { hospitalsData } from './hospital.data';
 
 export class FakeDbService implements InMemoryDbService {
   createDb(): any {
@@ -93,7 +94,10 @@ export class FakeDbService implements InMemoryDbService {
       'notifications-data': NotificationsFakeData.data,
 
       // Dashboard
-      'dashboard-data': DashboardFakeData.data
+      'dashboard-data': DashboardFakeData.data,
+
+      // Hospital
+      'hospital-data': hospitalsData
     };
   }
 }

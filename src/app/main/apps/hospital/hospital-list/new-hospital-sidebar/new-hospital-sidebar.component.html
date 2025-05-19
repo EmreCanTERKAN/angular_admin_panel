@@ -1,0 +1,231 @@
+<div class="slideout-content">
+  <!-- Modal to add new hospital starts-->
+  <div class="modalsd modal-slide-in sdfade new-user-modal" id="modals-slide-in">
+    <div class="modal-dialog">
+      <form class="add-new-user modal-content pt-0" (ngSubmit)="submit(newUserForm)" #newUserForm="ngForm">
+        <button
+          type="button"
+          class="close"
+          aria-label="Close"
+          (click)="toggleSidebar('new-user-sidebar')">
+          ×
+        </button>
+      
+        <div class="modal-header mb-1">
+          <h5 class="modal-title">Yeni Hastane</h5>
+        </div>
+      
+        <div class="modal-body flex-grow-1">
+          <!-- Hastane Kısa Adı -->
+          <div class="form-group">
+            <label class="form-label">Hastane Kısa Adı</label>
+            <input
+              type="text"
+              class="form-control"
+              name="shortName"
+              [(ngModel)]="user.shortName"
+              #shortNameRef="ngModel"
+              required
+              [class.error]="newUserForm.submitted && shortNameRef.invalid" />
+            <span *ngIf="newUserForm.submitted && shortNameRef.invalid" class="text-danger">
+              Kısa ad zorunludur!
+            </span>
+          </div>
+
+          <!-- Hastane Tam Ünvan -->
+          <div class="form-group">
+            <label class="form-label">Hastane Tam Ünvan</label>
+            <input
+              type="text"
+              class="form-control"
+              name="fullTitle"
+              [(ngModel)]="user.fullTitle"
+              #fullTitleRef="ngModel"
+              required
+              [class.error]="newUserForm.submitted && fullTitleRef.invalid" />
+            <span *ngIf="newUserForm.submitted && fullTitleRef.invalid" class="text-danger">
+              Tam ünvan zorunludur!
+            </span>
+          </div>
+
+          <!-- Yetkili Kişi -->
+          <div class="form-group">
+            <label class="form-label">Yetkili Kişi</label>
+            <input
+              type="text"
+              class="form-control"
+              name="authorizedPerson"
+              [(ngModel)]="user.authorizedPerson"
+              #authorizedPersonRef="ngModel"
+              required
+              [class.error]="newUserForm.submitted && authorizedPersonRef.invalid" />
+            <span *ngIf="newUserForm.submitted && authorizedPersonRef.invalid" class="text-danger">
+              Yetkili kişi zorunludur!
+            </span>
+          </div>
+
+          <!-- İl -->
+          <div class="form-group">
+            <label class="form-label">İl</label>
+            <input
+              type="text"
+              class="form-control"
+              name="city"
+              [(ngModel)]="user.city"
+              #cityRef="ngModel"
+              required
+              [class.error]="newUserForm.submitted && cityRef.invalid" />
+            <span *ngIf="newUserForm.submitted && cityRef.invalid" class="text-danger">
+              İl zorunludur!
+            </span>
+          </div>
+
+          <!-- İlçe -->
+          <div class="form-group">
+            <label class="form-label">İlçe</label>
+            <input
+              type="text"
+              class="form-control"
+              name="district"
+              [(ngModel)]="user.district"
+              #districtRef="ngModel"
+              required
+              [class.error]="newUserForm.submitted && districtRef.invalid" />
+            <span *ngIf="newUserForm.submitted && districtRef.invalid" class="text-danger">
+              İlçe zorunludur!
+            </span>
+          </div>
+
+          <!-- Telefon -->
+          <div class="form-group">
+            <label class="form-label">Telefon</label>
+            <input
+              type="tel"
+              class="form-control"
+              name="phone"
+              [(ngModel)]="user.phone"
+              required
+              pattern="^[0-9]{10,15}$"
+              #phoneRef="ngModel"
+              [class.error]="newUserForm.submitted && phoneRef.invalid" />
+            <span *ngIf="newUserForm.submitted && phoneRef.invalid" class="text-danger">
+              Geçerli bir telefon giriniz!
+            </span>
+          </div>
+
+          <!-- E-posta -->
+          <div class="form-group">
+            <label class="form-label">E-posta</label>
+            <input
+              type="email"
+              class="form-control"
+              name="email"
+              [(ngModel)]="user.email"
+              required
+              #emailRef="ngModel"
+              [class.error]="newUserForm.submitted && emailRef.invalid" />
+            <span *ngIf="newUserForm.submitted && emailRef.invalid" class="text-danger">
+              Geçerli bir e-posta adresi giriniz!
+            </span>
+          </div>
+
+          <!-- Adres -->
+          <div class="form-group">
+            <label class="form-label">Adres</label>
+            <input
+              type="text"
+              class="form-control"
+              name="address"
+              [(ngModel)]="user.address"
+              #addressRef="ngModel"
+              required
+              [class.error]="newUserForm.submitted && addressRef.invalid" />
+            <span *ngIf="newUserForm.submitted && addressRef.invalid" class="text-danger">
+              Adres zorunludur!
+            </span>
+          </div>
+
+          <!-- Vergi No -->
+          <div class="form-group">
+            <label class="form-label">Vergi No</label>
+            <input
+              type="text"
+              class="form-control"
+              name="taxNumber"
+              [(ngModel)]="user.taxNumber"
+              #taxNumberRef="ngModel"
+              required
+              [class.error]="newUserForm.submitted && taxNumberRef.invalid" />
+            <span *ngIf="newUserForm.submitted && taxNumberRef.invalid" class="text-danger">
+              Vergi numarası zorunludur!
+            </span>
+          </div>
+
+          <!-- Vergi Dairesi -->
+          <div class="form-group">
+            <label class="form-label">Vergi Dairesi</label>
+            <input
+              type="text"
+              class="form-control"
+              name="taxOffice"
+              [(ngModel)]="user.taxOffice"
+              #taxOfficeRef="ngModel"
+              required
+              [class.error]="newUserForm.submitted && taxOfficeRef.invalid" />
+            <span *ngIf="newUserForm.submitted && taxOfficeRef.invalid" class="text-danger">
+              Vergi dairesi zorunludur!
+            </span>
+          </div>
+
+          <!-- Web Site -->
+          <div class="form-group">
+            <label class="form-label">Web Site</label>
+            <input
+              type="text"
+              class="form-control"
+              name="website"
+              [(ngModel)]="user.website"
+              #websiteRef="ngModel"
+              required
+              [class.error]="newUserForm.submitted && websiteRef.invalid" />
+            <span *ngIf="newUserForm.submitted && websiteRef.invalid" class="text-danger">
+              Web site zorunludur!
+            </span>
+          </div>
+
+          <!-- Durum -->
+          <div class="form-group">
+            <label class="form-label">Durumu</label>
+            <select class="form-control" name="status" [(ngModel)]="user.status" required>
+              <option value="active">Aktif</option>
+              <option value="pasive">Pasif</option>
+            </select>
+          </div>
+
+          <!-- Kayıt Tarihi -->
+          <div class="form-group">
+            <label class="form-label">Kayıt Tarihi</label>
+            <input
+              type="date"
+              class="form-control"
+              name="registrationDate"
+              [(ngModel)]="user.createdAt"
+              #registrationDateRef="ngModel"
+              required
+              [class.error]="newUserForm.submitted && registrationDateRef.invalid" />
+            <span *ngIf="newUserForm.submitted && registrationDateRef.invalid" class="text-danger">
+              Kayıt tarihi zorunludur!
+            </span>
+          </div>
+
+          <!-- Submit / Cancel -->
+          <div class="form-group d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary mr-1" rippleEffect>Kaydet</button>
+            <button type="reset" class="btn btn-outline-secondary" (click)="toggleSidebar('new-user-sidebar')" rippleEffect>İptal</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- Modal to add new hospital Ends-->
+</div>

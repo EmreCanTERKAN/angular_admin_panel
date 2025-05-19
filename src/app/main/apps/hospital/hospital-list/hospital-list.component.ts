@@ -8,17 +8,15 @@ import { CoreConfigService } from '@core/services/config.service';
 import { CoreSidebarService } from '@core/components/core-sidebar/core-sidebar.service';
 
 import { UserListService } from 'app/main/apps/user/user-list/user-list.service';
-
-import { ToastrService } from 'ngx-toastr';
-import Swal from 'sweetalert2';
+import { HospitalListService } from './hospital-list.service';
 
 @Component({
   selector: 'app-user-list',
-  templateUrl: './user-list.component.html',
-  styleUrls: ['./user-list.component.scss'],
+  templateUrl: './hospital-list.component.html',
+  styleUrls: ['./hospital-list.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class UserListComponent implements OnInit {
+export class HospitalListComponent implements OnInit {
   // Public
   public sidebarToggleRef = false;
   public rows;
@@ -29,23 +27,10 @@ export class UserListComponent implements OnInit {
   public previousPlanFilter = '';
   public previousStatusFilter = '';
 
-  public selectRole: any = [
-    { name: 'All', value: '' },
-    { name: 'System', value: 'System' },
-    { name: 'Admin', value: 'Admin' },
-    { name: 'Reporter', value: 'Reporter' },
-    { name: 'Hospital', value: 'Hospital' },
-    { name: 'Doctor', value: 'Doctor' },
-    { name: 'Company', value: 'Company' }
-  ];
-
-  public selectPlan: any = [
-    { name: 'All', value: '' },
-    { name: 'Basic', value: 'Basic' },
-    { name: 'Company', value: 'Company' },
-    { name: 'Enterprise', value: 'Enterprise' },
-    { name: 'Team', value: 'Team' }
-  ];
+  public cityList: string[] = [];
+  public districtList: string[] = [];
+  public selectedCity: string = '';
+  public selectedDistrict: string = '';
 
   public selectStatus: any = [
     { name: 'All', value: '' },
@@ -68,15 +53,13 @@ export class UserListComponent implements OnInit {
    * Constructor
    *
    * @param {CoreConfigService} _coreConfigService
-   * @param {UserListService} _userListService
+   * @param {HospitalListService} _hospitalListService
    * @param {CoreSidebarService} _coreSidebarService
-   * @param {ToastrService} _toastr
    */
   constructor(
-    private _userListService: UserListService,
+    private _hospitalListService: HospitalListService,
     private _coreSidebarService: CoreSidebarService,
-    private _coreConfigService: CoreConfigService,
-    private toastr: ToastrService
+    private _coreConfigService: CoreConfigService
   ) {
     this._unsubscribeAll = new Subject();
   }
@@ -90,19 +73,7 @@ export class UserListComponent implements OnInit {
    * @param event
    */
   filterUpdate(event) {
-    // Sadece arama kutusu için filtreleme
-    const val = event.target.value.toLowerCase();
-    const temp = this.tempData.filter(function (d) {
-      return (
-        (d.userName && d.userName.toLowerCase().includes(val)) ||
-        (d.fullName && d.fullName.toLowerCase().includes(val)) ||
-        (d.email && d.email.toLowerCase().includes(val)) ||
-        (d.phone && d.phone.toLowerCase().includes(val)) ||
-        !val
-      );
-    });
-    this.rows = temp;
-    this.table.offset = 0;
+    this.applyAllFilters();
   }
 
   /**
@@ -144,10 +115,8 @@ export class UserListComponent implements OnInit {
    * @param event
    */
   filterByStatus(event) {
-    const filter = event ? event.value : '';
-    this.previousStatusFilter = filter;
-    this.temp = this.filterRows(this.previousRoleFilter, filter);
-    this.rows = this.temp;
+    this.selectedStatus = event ? event.target ? event.target.value : event : '';
+    this.applyAllFilters();
   }
 
   /**
@@ -168,23 +137,60 @@ export class UserListComponent implements OnInit {
     });
   }
 
-  onDelete(row) {
-    Swal.fire({
-      title: 'Emin misiniz?',
-      text: 'Bu kullanıcıyı silmek istediğinize emin misiniz?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Evet, sil',
-      cancelButtonText: 'Vazgeç'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // Silme işlemini burada yapabilirsin
-        // Örnek: this.rows = this.rows.filter(u => u.id !== row.id);
-        // Eğer id yoksa, başka bir unique alan kullanabilirsin
-        this.rows = this.rows.filter(u => u !== row);
-        this.toastr.success('Kullanıcı başarıyla silindi!', 'Başarılı');
-      }
-    });
+  filterByCity(event) {
+    const city = event ? event.target ? event.target.value : event : '';
+    this.selectedCity = city;
+    this.updateDistrictList();
+    this.applyAllFilters();
+  }
+
+  filterByDistrict(event) {
+    const district = event ? event.target ? event.target.value : event : '';
+    this.selectedDistrict = district;
+    this.applyAllFilters();
+  }
+
+  updateDistrictList() {
+    if (this.selectedCity) {
+      const districts = this.tempData
+        .filter(row => row.city === this.selectedCity)
+        .map(row => row.district)
+        .filter((value, index, self) => value && self.indexOf(value) === index);
+      this.districtList = districts;
+    } else {
+      this.districtList = this.tempData
+        .map(row => row.district)
+        .filter((value, index, self) => value && self.indexOf(value) === index);
+    }
+  }
+
+  applyAllFilters() {
+    let filtered = this.tempData;
+    // Metin arama
+    const val = this.searchValue ? this.searchValue.toLowerCase() : '';
+    if (val) {
+      filtered = filtered.filter(d =>
+        (d.shortName && d.shortName.toLowerCase().includes(val)) ||
+        (d.fullTitle && d.fullTitle.toLowerCase().includes(val)) ||
+        (d.authorizedPerson && d.authorizedPerson.toLowerCase().includes(val)) ||
+        (d.email && d.email.toLowerCase().includes(val)) ||
+        (d.phone && d.phone.toLowerCase().includes(val))
+      );
+    }
+    // Durum filtresi
+    if (this.selectedStatus) {
+      filtered = filtered.filter(d => d.status === this.selectedStatus);
+    }
+    // İl filtresi
+    if (this.selectedCity) {
+      filtered = filtered.filter(d => d.city === this.selectedCity);
+    }
+    // İlçe filtresi
+    if (this.selectedDistrict) {
+      filtered = filtered.filter(d => d.district === this.selectedDistrict);
+    }
+    this.rows = filtered;
+    this.table.offset = 0;
   }
 
   // Lifecycle Hooks
@@ -198,15 +204,23 @@ export class UserListComponent implements OnInit {
       //! If we have zoomIn route Transition then load datatable after 450ms(Transition will finish in 400ms)
       if (config.layout.animation === 'zoomIn') {
         setTimeout(() => {
-          this._userListService.onUserListChanged.pipe(takeUntil(this._unsubscribeAll)).subscribe(response => {
+          this._hospitalListService.onUserListChanged.pipe(takeUntil(this._unsubscribeAll)).subscribe(response => {
             this.rows = response;
             this.tempData = this.rows;
+            this.cityList = this.tempData
+              .map(row => row.city)
+              .filter((value, index, self) => value && self.indexOf(value) === index);
+            this.updateDistrictList();
           });
         }, 450);
       } else {
-        this._userListService.onUserListChanged.pipe(takeUntil(this._unsubscribeAll)).subscribe(response => {
+        this._hospitalListService.onUserListChanged.pipe(takeUntil(this._unsubscribeAll)).subscribe(response => {
           this.rows = response;
           this.tempData = this.rows;
+          this.cityList = this.tempData
+            .map(row => row.city)
+            .filter((value, index, self) => value && self.indexOf(value) === index);
+          this.updateDistrictList();
         });
       }
     });
@@ -219,32 +233,5 @@ export class UserListComponent implements OnInit {
     // Unsubscribe from all subscriptions
     this._unsubscribeAll.next();
     this._unsubscribeAll.complete();
-  }
-
-  confirmTextOpen() {
-    Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#7367F0',
-      cancelButtonColor: '#E42728',
-      confirmButtonText: 'Yes, delete it!',
-      customClass: {
-        confirmButton: 'btn btn-primary',
-        cancelButton: 'btn btn-danger ml-1'
-      }
-    }).then(function (result) {
-      if (result.value) {
-        Swal.fire({
-          icon: 'success',
-          title: 'Deleted!',
-          text: 'Your file has been deleted.',
-          customClass: {
-            confirmButton: 'btn btn-success'
-          }
-        });
-      }
-    });
   }
 }
