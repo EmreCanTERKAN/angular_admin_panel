@@ -7,11 +7,13 @@ import { takeUntil } from 'rxjs/operators';
 import { CoreConfigService } from '@core/services/config.service';
 import { CoreSidebarService } from '@core/components/core-sidebar/core-sidebar.service';
 
-import { UserListService } from 'app/main/apps/user/user-list/user-list.service';
+import { UserListService } from 'app/main/services/user-list.service';
 
-import { ToastrService } from 'ngx-toastr';
-import Swal from 'sweetalert2';
-import { SwalService } from '../../services/swal.service';
+import { SwalService } from '../../../services/swal.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgForm } from '@angular/forms';
+import { HttpService } from 'app/main/services/http.service';
+import { UserModel } from 'app/main/models/user.model';
 
 @Component({
   selector: 'app-user-list',
@@ -29,7 +31,7 @@ export class UserListComponent implements OnInit {
   public previousRoleFilter = '';
   public previousPlanFilter = '';
   public previousStatusFilter = '';
-
+  
   public selectRole: any = [
     { name: 'All', value: '' },
     { name: 'System', value: 'System' },
@@ -39,7 +41,7 @@ export class UserListComponent implements OnInit {
     { name: 'Doctor', value: 'Doctor' },
     { name: 'Company', value: 'Company' }
   ];
-
+  
   public selectPlan: any = [
     { name: 'All', value: '' },
     { name: 'Basic', value: 'Basic' },
@@ -47,38 +49,33 @@ export class UserListComponent implements OnInit {
     { name: 'Enterprise', value: 'Enterprise' },
     { name: 'Team', value: 'Team' }
   ];
-
+  
   public selectStatus: any = [
     { name: 'All', value: '' },
     { name: 'Active', value: 'Active' },
     { name: 'Inactive', value: 'Inactive' }
   ];
-
+  
   public selectedRole = [];
   public selectedStatus = [];
   public searchValue = '';
+  
+  updateModel : UserModel = new UserModel();
+  createModel : UserModel = new UserModel();
 
-  // Decorator
   @ViewChild(DatatableComponent) table: DatatableComponent;
 
-  // Private
+
   private tempData = [];
   private _unsubscribeAll: Subject<any>;
 
-  /**
-   * Constructor
-   *
-   * @param {CoreConfigService} _coreConfigService
-   * @param {UserListService} _userListService
-   * @param {CoreSidebarService} _coreSidebarService
-   * @param {ToastrService} _toastr
-   * @param {SwalService} _swal
-   */
   constructor(
     private _userListService: UserListService,
     private _coreSidebarService: CoreSidebarService,
     private _coreConfigService: CoreConfigService,
-    private _swal : SwalService
+    private _swal : SwalService,
+    private _modalService: NgbModal,
+    private _http : HttpService
 
   ) {
     this._unsubscribeAll = new Subject();
@@ -87,11 +84,18 @@ export class UserListComponent implements OnInit {
   // Public Methods
   // -----------------------------------------------------------------------------------------------------
 
-  /**
-   * filterUpdate
-   *
-   * @param event
-   */
+  modalOpenForm(modalForm) {
+    this._modalService.open(modalForm);
+  }
+
+  update(form : NgForm) {
+    if(form.valid) {
+      this._http.post<string>("User/Update",this.updateModel,(res) => {
+        this._swal.toastrInfo(res);
+      })
+    }
+  }
+
   filterUpdate(event) {
     // Sadece arama kutusu için filtreleme
     const val = event.target.value.toLowerCase();
@@ -108,20 +112,11 @@ export class UserListComponent implements OnInit {
     this.table.offset = 0;
   }
 
-  /**
-   * Toggle the sidebar
-   *
-   * @param name
-   */
   toggleSidebar(name): void {
     this._coreSidebarService.getSidebarRegistry(name).toggleOpen();
   }
 
-  /**
-   * Filter By Roles
-   *
-   * @param event
-   */
+
   filterByRole(event) {
     const filter = event ? event.value : '';
     this.previousRoleFilter = filter;
@@ -129,11 +124,7 @@ export class UserListComponent implements OnInit {
     this.rows = this.temp;
   }
 
-  /**
-   * Filter By Plan
-   *
-   * @param event
-   */
+
   filterByPlan(event) {
     const filter = event ? event.value : '';
     this.previousPlanFilter = filter;
@@ -141,11 +132,6 @@ export class UserListComponent implements OnInit {
     this.rows = this.temp;
   }
 
-  /**
-   * Filter By Status
-   *
-   * @param event
-   */
   filterByStatus(event) {
     const filter = event ? event.value : '';
     this.previousStatusFilter = filter;
@@ -153,12 +139,6 @@ export class UserListComponent implements OnInit {
     this.rows = this.temp;
   }
 
-  /**
-   * Filter Rows
-   *
-   * @param roleFilter
-   * @param statusFilter
-   */
   filterRows(roleFilter, statusFilter): any[] {
     // Arama kutusunu sıfırla
     this.searchValue = '';

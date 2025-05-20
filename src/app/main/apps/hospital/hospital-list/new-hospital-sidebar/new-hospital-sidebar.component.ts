@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CoreSidebarService } from '@core/components/core-sidebar/core-sidebar.service';
-import { CreateHospitalModel } from './create-hospital.model';
+import { HospitalModel } from '../../../../models/hospital.model';
 
 @Component({
   selector: 'app-new-hospital-sidebar',
   templateUrl: './new-hospital-sidebar.component.html'
 })
 export class NewHospitalSidebarComponent implements OnInit {
-  user: CreateHospitalModel = {
+  user: HospitalModel = {
     shortName: '',
     fullTitle: '',
     authorizedPerson: '',

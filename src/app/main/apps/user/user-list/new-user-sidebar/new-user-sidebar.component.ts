@@ -1,22 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { CoreSidebarService } from '@core/components/core-sidebar/core-sidebar.service';
-import { CreateUserModel } from './create-user.model';
+import { UserModel } from '../../../../models/user.model';
 
 @Component({
   selector: 'app-new-user-sidebar',
   templateUrl: './new-user-sidebar.component.html'
 })
 export class NewUserSidebarComponent implements OnInit {
-  user: CreateUserModel = {
+  user: UserModel = {
+    id: '',
     firstName: '',
     lastName: '',
+    fullName: '',
     phone: '',
     email: '',
-    username: '',
+    userName: '',
     password: '',
     confirmPassword: '',
     role: '',
-    status: 'active',
+    isActive: false,
     signature: ''
   };
 

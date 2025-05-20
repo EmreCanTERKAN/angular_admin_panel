@@ -1,12 +1,14 @@
-export interface CreateUserModel {
+export class UserModel {
+    id: string; 
     firstName: string;
     lastName: string;
+    fullName: string;
     phone: string;
     email: string;
-    username: string;
+    userName: string;
     password: string;
     confirmPassword: string;
     role: string;
     signature?: string;
-    status: 'active' | 'pasive';
+    isActive: boolean;
   }

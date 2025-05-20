@@ -151,4 +151,174 @@
     <app-new-user-sidebar></app-new-user-sidebar>
   </core-sidebar>
   <!--/ New User Sidebar -->
+
+  <!-- Login Form -->
+  <div class="login-form">
+    <!-- Button trigger modal -->
+    <button type="button" (click)="modalOpenForm(modalForm)" class="btn btn-outline-primary" rippleEffect>
+      Login Form
+    </button>
+  
+    <!-- Modal -->
+    <ng-template #modalForm let-modal>
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel1">Güncelleme Formu</h4>
+        <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" tabindex="0" ngbAutofocus>
+        <div class="form-group">
+          <label class="form-label">Adı</label>
+          <input
+            type="text"
+            class="form-control"
+            name="firstName"
+            [(ngModel)]="user.firstName"
+            #firstNameRef="ngModel"
+            required
+            [class.error]="newUserForm.submitted && firstNameRef.invalid" />
+          <span *ngIf="newUserForm.submitted && firstNameRef.invalid" class="text-danger">
+            Ad zorunludur!
+          </span>
+        </div>
+    
+        <!-- Soyad -->
+        <div class="form-group">
+          <label class="form-label">Soyadı</label>
+          <input
+            type="text"
+            class="form-control"
+            name="lastName"
+            [(ngModel)]="user.lastName"
+            #lastNameRef="ngModel"
+            required
+            [class.error]="newUserForm.submitted && lastNameRef.invalid" />
+          <span *ngIf="newUserForm.submitted && lastNameRef.invalid" class="text-danger">
+            Soyad zorunludur!
+          </span>
+        </div>
+    
+        <!-- Telefon -->
+        <div class="form-group">
+          <label class="form-label">Telefon</label>
+          <input
+            type="tel"
+            class="form-control"
+            name="phone"
+            [(ngModel)]="user.phone"
+            required
+            pattern="^[0-9]{10,15}$"
+            #phoneRef="ngModel"
+            [class.error]="newUserForm.submitted && phoneRef.invalid" />
+          <span *ngIf="newUserForm.submitted && phoneRef.invalid" class="text-danger">
+            Geçerli bir telefon giriniz!
+          </span>
+        </div>
+    
+        <!-- Email -->
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input
+            type="email"
+            class="form-control"
+            name="email"
+            [(ngModel)]="user.email"
+            required
+            #emailRef="ngModel"
+            [class.error]="newUserForm.submitted && emailRef.invalid" />
+          <span *ngIf="newUserForm.submitted && emailRef.invalid" class="text-danger">
+            Geçerli bir e-posta adresi giriniz!
+          </span>
+        </div>
+    
+        <!-- Kullanıcı Adı -->
+        <div class="form-group">
+          <label class="form-label">Kullanıcı Adı</label>
+          <input
+            type="text"
+            class="form-control"
+            name="username"
+            [(ngModel)]="user.userName"
+            required
+            #usernameRef="ngModel"
+            [class.error]="newUserForm.submitted && usernameRef.invalid" />
+          <span *ngIf="newUserForm.submitted && usernameRef.invalid" class="text-danger">
+            Kullanıcı adı zorunludur!
+          </span>
+        </div>
+    
+        <!-- Şifre -->
+        <div class="form-group">
+          <label class="form-label">Şifre</label>
+          <input
+            type="password"
+            class="form-control"
+            name="password"
+            [(ngModel)]="user.password"
+            required
+            minlength="6"
+            #passwordRef="ngModel"
+            [class.error]="newUserForm.submitted && passwordRef.invalid" />
+          <span *ngIf="newUserForm.submitted && passwordRef.invalid" class="text-danger">
+            Şifre en az 6 karakter olmalıdır!
+          </span>
+        </div>
+    
+        <!-- Şifre Tekrar -->
+        <div class="form-group">
+          <label class="form-label">Şifre Tekrar</label>
+          <input
+            type="password"
+            class="form-control"
+            name="confirmPassword"
+            [(ngModel)]="user.confirmPassword"
+            required
+            #confirmPasswordRef="ngModel"
+            [class.error]="newUserForm.submitted && user.password !== user.confirmPassword" />
+          <span *ngIf="newUserForm.submitted && user.password !== user.confirmPassword" class="text-danger">
+            Şifreler uyuşmuyor!
+          </span>
+        </div>
+    
+        <!-- Rol Seçimi -->
+        <div class="form-group">
+          <label class="form-label">Rol</label>
+          <select class="form-control" name="role" [(ngModel)]="user.role" required>
+            <option value="">Rol Seçiniz</option>
+            <option value="doctor">Doktor</option>
+            <option value="reporter">Raportör</option>
+            <option value="admin">Yönetici</option>
+            <option value="hospital">Hastane</option>
+            <option value="company">Şirket</option>
+          </select>
+        </div>
+    
+        <!-- İmza (Sadece doktor için) -->
+        <div class="form-group" *ngIf="user.role === 'doctor'">
+          <label class="form-label">İmza Seçimi</label>
+          <select class="form-control" name="signature" [(ngModel)]="user.signature" required>
+            <option value="">İmza Seçiniz</option>
+            <option *ngFor="let sig of signatures" [value]="sig.id">{{ sig.name }}</option>
+          </select>
+        </div>
+    
+        <!-- Durum -->
+        <div class="form-group">
+          <label class="form-label">Durumu</label>
+          <select class="form-control" name="status" [(ngModel)]="user.isActive" required>
+            <option [ngValue]="true">Aktif</option>
+            <option [ngValue]="false">Pasif</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="modal.close('Accept click')" rippleEffect>
+          Login
+        </button>
+      </div>
+    </ng-template>
+    <!-- / Modal -->
+  </div>
+  
 </div>

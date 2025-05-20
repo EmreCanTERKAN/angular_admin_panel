@@ -7,7 +7,7 @@ export const menu: CoreMenu[] = [
   {
     id: 'apps',
     type: 'section',
-    title: 'Apps & Pages',
+    title: 'Uygulamalar',
     translate: 'MENU.APPS.SECTION',
     icon: 'package',
     children: [
@@ -22,7 +22,6 @@ export const menu: CoreMenu[] = [
       {
         id: 'hospitals',
         title: 'Hastaneler',
-        translate: 'MENU.APPS.HOSPITAL.LIST',
         type: 'item',
         icon: 'home',
         url: 'apps/hospital/hospital-list'

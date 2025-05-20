@@ -13,11 +13,8 @@ import { CoreDirectivesModule } from '@core/directives/directives';
 import { CorePipesModule } from '@core/pipes/pipes.module';
 import { CoreSidebarModule } from '@core/components';
 
-
-
-
 import { UserListComponent } from 'app/main/apps/user/user-list/user-list.component';
-import { UserListService } from 'app/main/apps/user/user-list/user-list.service';
+import { UserListService } from 'app/main/services/user-list.service';
 
 
 import { NewUserSidebarComponent } from 'app/main/apps/user/user-list/new-user-sidebar/new-user-sidebar.component';

@@ -7,7 +7,7 @@ import { takeUntil } from 'rxjs/operators';
 import { CoreConfigService } from '@core/services/config.service';
 import { CoreSidebarService } from '@core/components/core-sidebar/core-sidebar.service';
 
-import { UserListService } from 'app/main/apps/user/user-list/user-list.service';
+import { UserListService } from 'app/main/services/user-list.service';
 import { HospitalListService } from './hospital-list.service';
 
 @Component({

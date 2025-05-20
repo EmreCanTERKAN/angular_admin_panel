@@ -88,7 +88,7 @@
               type="text"
               class="form-control"
               name="username"
-              [(ngModel)]="user.username"
+              [(ngModel)]="user.userName"
               required
               #usernameRef="ngModel"
               [class.error]="newUserForm.submitted && usernameRef.invalid" />
@@ -155,9 +155,9 @@
           <!-- Durum -->
           <div class="form-group">
             <label class="form-label">Durumu</label>
-            <select class="form-control" name="status" [(ngModel)]="user.status" required>
-              <option value="active">Aktif</option>
-              <option value="pasive">Pasif</option>
+            <select class="form-control" name="status" [(ngModel)]="user.isActive" required>
+              <option [ngValue]="true">Aktif</option>
+              <option [ngValue]="false">Pasif</option>
             </select>
           </div>
       

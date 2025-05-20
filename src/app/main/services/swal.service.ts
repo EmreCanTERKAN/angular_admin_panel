@@ -21,8 +21,8 @@ export class SwalService {
   }
 
   // Info
-  toastrInfo() {
-    this.toastr.info('👋 Chupa chups biscuit brownie gummi sugar plum caramels.', 'Info!', {
+  toastrInfo(title:string) {
+    this.toastr.info(title, 'Bilgi!', {
       toastClass: 'toast ngx-toastr',
       closeButton: true
     });
